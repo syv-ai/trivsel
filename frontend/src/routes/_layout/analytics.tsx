@@ -351,7 +351,7 @@ function AnalyticsPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.4 }}
           >
-            <Card className="rounded-2xl border-0 shadow-soft overflow-hidden">
+            <Card className="relative rounded-2xl border-0 shadow-soft overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent" />
               <CardContent className="relative pt-6">
                 <div className="flex items-start gap-4">
@@ -419,7 +419,7 @@ function AnalyticsPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.4 }}
           >
-            <Card className="rounded-2xl border-0 shadow-soft overflow-hidden">
+            <Card className="relative rounded-2xl border-0 shadow-soft overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent" />
               <CardContent className="relative pt-6">
                 <div className="flex items-start gap-4">
