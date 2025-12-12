@@ -4,7 +4,7 @@ services:
     image: postgres:17
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -h localhost"]
       interval: 5s
       retries: 10
       start_period: 60s
@@ -13,7 +13,7 @@ services:
       - app-db-data:/var/lib/postgresql/data/pgdata
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-trivsel2024db}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-app}
 
@@ -38,22 +38,22 @@ services:
     command: bash scripts/prestart.sh
     environment:
       - PROJECT_NAME=${PROJECT_NAME:-Trivsel}
-      - DOMAIN=${DOMAIN:-localhost}
-      - FRONTEND_HOST=${FRONTEND_HOST:-http://localhost}
+      - DOMAIN=${DOMAIN:-ailex.dk}
+      - FRONTEND_HOST=${FRONTEND_HOST:-https://nc8gsog80swggg84co0wck8w.ailex.dk}
       - ENVIRONMENT=${ENVIRONMENT:-production}
-      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-}
-      - SECRET_KEY=${SECRET_KEY}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-https://nc8gsog80swggg84co0wck8w.ailex.dk}
+      - SECRET_KEY=${SECRET_KEY:-bobobo}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-changethis}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-bob123456}
       - SMTP_HOST=${SMTP_HOST:-}
       - SMTP_USER=${SMTP_USER:-}
       - SMTP_PASSWORD=${SMTP_PASSWORD:-}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL:-noreply@example.com}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL:-noreply@ailex.dk}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DB=${POSTGRES_DB:-app}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-trivsel2024db}
       - SENTRY_DSN=${SENTRY_DSN:-}
 
   backend:
@@ -67,22 +67,22 @@ services:
         condition: service_completed_successfully
     environment:
       - PROJECT_NAME=${PROJECT_NAME:-Trivsel}
-      - DOMAIN=${DOMAIN:-localhost}
-      - FRONTEND_HOST=${FRONTEND_HOST:-http://localhost}
+      - DOMAIN=${DOMAIN:-ailex.dk}
+      - FRONTEND_HOST=${FRONTEND_HOST:-https://nc8gsog80swggg84co0wck8w.ailex.dk}
       - ENVIRONMENT=${ENVIRONMENT:-production}
-      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-}
-      - SECRET_KEY=${SECRET_KEY}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-https://nc8gsog80swggg84co0wck8w.ailex.dk}
+      - SECRET_KEY=${SECRET_KEY:-bobobo}
       - FIRST_SUPERUSER=${FIRST_SUPERUSER:-admin@example.com}
-      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-changethis}
+      - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD:-bob123456}
       - SMTP_HOST=${SMTP_HOST:-}
       - SMTP_USER=${SMTP_USER:-}
       - SMTP_PASSWORD=${SMTP_PASSWORD:-}
-      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL:-noreply@example.com}
+      - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL:-noreply@ailex.dk}
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DB=${POSTGRES_DB:-app}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changethis}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-trivsel2024db}
       - SENTRY_DSN=${SENTRY_DSN:-}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
