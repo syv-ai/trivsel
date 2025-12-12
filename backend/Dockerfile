@@ -40,6 +40,4 @@ COPY ./app /app/app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync
 
-COPY ./alembic /app/alembic
-
 CMD ["bash", "-c", "alembic upgrade head && python app/initial_data.py && fastapi run --workers 4 app/main.py"]
