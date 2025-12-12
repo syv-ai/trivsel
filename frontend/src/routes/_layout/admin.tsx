@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router"
 import { Suspense } from "react"
 
 import { type UserPublic, UsersService } from "@/client"
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_layout/admin")({
   head: () => ({
     meta: [
       {
-        title: "Admin - FastAPI Cloud",
+        title: "Brugere - Admin - TrivselsTracker",
       },
     ],
   }),
@@ -47,14 +47,14 @@ function UsersTable() {
   )
 }
 
-function Admin() {
+function UsersContent() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Users</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Brugere</h1>
           <p className="text-muted-foreground">
-            Manage user accounts and permissions
+            Administrer brugerkonti og tilladelser
           </p>
         </div>
         <AddUser />
@@ -62,4 +62,18 @@ function Admin() {
       <UsersTable />
     </div>
   )
+}
+
+function Admin() {
+  // Check if we're on a child route by looking at the current path
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+
+  // If we're on /admin/students, /admin/questions, or /admin/groups, render the child route
+  const isChildRoute = pathname !== "/admin" && pathname.startsWith("/admin/")
+
+  if (isChildRoute) {
+    return <Outlet />
+  }
+
+  return <UsersContent />
 }

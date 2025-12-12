@@ -94,6 +94,20 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 
+    # Lettermint Email Settings
+    LETTERMINT_API_TOKEN: str = ""
+    LETTERMINT_FROM_EMAIL: str = "trivsel@example.com"
+    LETTERMINT_FROM_NAME: str = "TrivselsTracker"
+
+    # Survey Settings
+    SURVEY_TOKEN_EXPIRY_DAYS: int = 4
+    SURVEY_MAX_REMINDERS: int = 2
+    SURVEY_LINK_BASE_URL: str = "http://localhost:5173/survey"
+
+    # Scoring Thresholds
+    SCORE_GREEN_MIN: float = 4.0
+    SCORE_YELLOW_MIN: float = 3.0
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (

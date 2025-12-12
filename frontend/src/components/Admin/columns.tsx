@@ -12,7 +12,7 @@ export type UserTableData = UserPublic & {
 export const columns: ColumnDef<UserTableData>[] = [
   {
     accessorKey: "full_name",
-    header: "Full Name",
+    header: "Fulde navn",
     cell: ({ row }) => {
       const fullName = row.original.full_name
       return (
@@ -20,11 +20,11 @@ export const columns: ColumnDef<UserTableData>[] = [
           <span
             className={cn("font-medium", !fullName && "text-muted-foreground")}
           >
-            {fullName || "N/A"}
+            {fullName || "Ikke angivet"}
           </span>
           {row.original.isCurrentUser && (
             <Badge variant="outline" className="text-xs">
-              You
+              Dig
             </Badge>
           )}
         </div>
@@ -40,10 +40,10 @@ export const columns: ColumnDef<UserTableData>[] = [
   },
   {
     accessorKey: "is_superuser",
-    header: "Role",
+    header: "Rolle",
     cell: ({ row }) => (
       <Badge variant={row.original.is_superuser ? "default" : "secondary"}>
-        {row.original.is_superuser ? "Superuser" : "User"}
+        {row.original.is_superuser ? "Superbruger" : "Bruger"}
       </Badge>
     ),
   },
@@ -59,14 +59,14 @@ export const columns: ColumnDef<UserTableData>[] = [
           )}
         />
         <span className={row.original.is_active ? "" : "text-muted-foreground"}>
-          {row.original.is_active ? "Active" : "Inactive"}
+          {row.original.is_active ? "Aktiv" : "Inaktiv"}
         </span>
       </div>
     ),
   },
   {
     id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">Handlinger</span>,
     cell: ({ row }) => (
       <div className="flex justify-end">
         <UserActionsMenu user={row.original} />

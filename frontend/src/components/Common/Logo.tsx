@@ -1,11 +1,7 @@
 import { Link } from "@tanstack/react-router"
+import { Heart } from "lucide-react"
 
-import { useTheme } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import icon from "/assets/images/fastapi-icon.svg"
-import iconLight from "/assets/images/fastapi-icon-light.svg"
-import logo from "/assets/images/fastapi-logo.svg"
-import logoLight from "/assets/images/fastapi-logo-light.svg"
 
 interface LogoProps {
   variant?: "full" | "icon" | "responsive"
@@ -18,38 +14,31 @@ export function Logo({
   className,
   asLink = true,
 }: LogoProps) {
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
+  const iconContent = (
+    <div className={cn("flex items-center justify-center p-1 rounded-lg bg-primary/10", className)}>
+      <Heart className="h-5 w-5 text-primary fill-primary/20" />
+    </div>
+  )
 
-  const fullLogo = isDark ? logoLight : logo
-  const iconLogo = isDark ? iconLight : icon
+  const fullContent = (
+    <div className={cn("flex items-center gap-2", className)}>
+      <div className="flex items-center justify-center p-1.5 rounded-lg bg-primary/10">
+        <Heart className="h-5 w-5 text-primary fill-primary/20" />
+      </div>
+      <span className="font-semibold text-lg tracking-tight">TrivselsTracker</span>
+    </div>
+  )
 
   const content =
     variant === "responsive" ? (
       <>
-        <img
-          src={fullLogo}
-          alt="FastAPI"
-          className={cn(
-            "h-6 w-auto group-data-[collapsible=icon]:hidden",
-            className,
-          )}
-        />
-        <img
-          src={iconLogo}
-          alt="FastAPI"
-          className={cn(
-            "size-5 hidden group-data-[collapsible=icon]:block",
-            className,
-          )}
-        />
+        <div className="group-data-[collapsible=icon]:hidden">{fullContent}</div>
+        <div className="hidden group-data-[collapsible=icon]:block">{iconContent}</div>
       </>
+    ) : variant === "full" ? (
+      fullContent
     ) : (
-      <img
-        src={variant === "full" ? fullLogo : iconLogo}
-        alt="FastAPI"
-        className={cn(variant === "full" ? "h-6 w-auto" : "size-5", className)}
-      />
+      iconContent
     )
 
   if (!asLink) {

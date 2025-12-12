@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Nordic Wellness Design System - TrivselsTracker */
+/* A warm, organic aesthetic for wellbeing tracking */
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -39,86 +47,386 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Wellness Colors */
+  --color-wellness-green: var(--wellness-green);
+  --color-wellness-yellow: var(--wellness-yellow);
+  --color-wellness-red: var(--wellness-red);
+  --color-wellness-sage: var(--wellness-sage);
+  --color-wellness-cream: var(--wellness-cream);
+  --color-wellness-lavender: var(--wellness-lavender);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.5982 0.10687 182.4689);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.5982 0.10687 182.4689);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 1rem;
+
+  /* Warm, organic palette inspired by Nordic nature */
+  --background: oklch(0.988 0.002 90);
+  --foreground: oklch(0.22 0.02 50);
+  --card: oklch(0.995 0.001 90);
+  --card-foreground: oklch(0.22 0.02 50);
+  --popover: oklch(0.995 0.001 90);
+  --popover-foreground: oklch(0.22 0.02 50);
+
+  /* Primary: Warm teal/sage - calming, trustworthy */
+  --primary: oklch(0.55 0.12 175);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* Secondary: Soft lavender - gentle, supportive */
+  --secondary: oklch(0.94 0.02 290);
+  --secondary-foreground: oklch(0.35 0.05 290);
+
+  --muted: oklch(0.96 0.005 90);
+  --muted-foreground: oklch(0.50 0.02 50);
+
+  /* Accent: Warm peach - friendly, approachable */
+  --accent: oklch(0.92 0.04 60);
+  --accent-foreground: oklch(0.35 0.08 50);
+
+  --destructive: oklch(0.60 0.20 25);
+  --border: oklch(0.92 0.01 90);
+  --input: oklch(0.94 0.005 90);
+  --ring: oklch(0.55 0.12 175);
+
+  /* Wellness status colors - organic, not harsh */
+  --wellness-green: oklch(0.70 0.15 145);
+  --wellness-yellow: oklch(0.82 0.14 85);
+  --wellness-red: oklch(0.62 0.18 25);
+  --wellness-sage: oklch(0.80 0.06 160);
+  --wellness-cream: oklch(0.96 0.02 85);
+  --wellness-lavender: oklch(0.88 0.05 290);
+
+  /* Chart colors */
+  --chart-1: oklch(0.55 0.12 175);
+  --chart-2: oklch(0.70 0.15 145);
+  --chart-3: oklch(0.82 0.14 85);
+  --chart-4: oklch(0.75 0.12 290);
+  --chart-5: oklch(0.68 0.15 45);
+
+  /* Sidebar - slightly warmer */
+  --sidebar: oklch(0.98 0.005 85);
+  --sidebar-foreground: oklch(0.22 0.02 50);
+  --sidebar-primary: oklch(0.55 0.12 175);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.94 0.02 90);
+  --sidebar-accent-foreground: oklch(0.35 0.05 50);
+  --sidebar-border: oklch(0.92 0.01 90);
+  --sidebar-ring: oklch(0.55 0.12 175);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.65 0.10687 182.4689);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.65 0.10687 182.4689);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.16 0.015 260);
+  --foreground: oklch(0.95 0.005 90);
+  --card: oklch(0.20 0.015 260);
+  --card-foreground: oklch(0.95 0.005 90);
+  --popover: oklch(0.20 0.015 260);
+  --popover-foreground: oklch(0.95 0.005 90);
+
+  --primary: oklch(0.70 0.12 175);
+  --primary-foreground: oklch(0.15 0.02 175);
+
+  --secondary: oklch(0.28 0.02 260);
+  --secondary-foreground: oklch(0.90 0.02 90);
+
+  --muted: oklch(0.25 0.01 260);
+  --muted-foreground: oklch(0.65 0.02 90);
+
+  --accent: oklch(0.30 0.03 50);
+  --accent-foreground: oklch(0.92 0.03 50);
+
+  --destructive: oklch(0.65 0.22 25);
+  --border: oklch(0.28 0.01 260);
+  --input: oklch(0.25 0.01 260);
+  --ring: oklch(0.70 0.12 175);
+
+  --wellness-green: oklch(0.72 0.16 145);
+  --wellness-yellow: oklch(0.80 0.15 85);
+  --wellness-red: oklch(0.68 0.20 25);
+  --wellness-sage: oklch(0.45 0.08 160);
+  --wellness-cream: oklch(0.30 0.02 85);
+  --wellness-lavender: oklch(0.40 0.06 290);
+
+  --chart-1: oklch(0.70 0.12 175);
+  --chart-2: oklch(0.72 0.16 145);
+  --chart-3: oklch(0.80 0.15 85);
+  --chart-4: oklch(0.70 0.14 290);
+  --chart-5: oklch(0.72 0.16 45);
+
+  --sidebar: oklch(0.18 0.015 260);
+  --sidebar-foreground: oklch(0.95 0.005 90);
+  --sidebar-primary: oklch(0.70 0.12 175);
+  --sidebar-primary-foreground: oklch(0.15 0.02 175);
+  --sidebar-accent: oklch(0.25 0.02 260);
+  --sidebar-accent-foreground: oklch(0.90 0.02 90);
+  --sidebar-border: oklch(0.28 0.01 260);
+  --sidebar-ring: oklch(0.70 0.12 175);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  html {
+    scroll-behavior: smooth;
   }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "ss01", "ss02", "cv01";
+  }
+
   button,
   [role="button"] {
     cursor: pointer;
   }
+
+  /* Smooth focus transitions */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background transition-shadow duration-200;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/30 transition-colors;
+  }
+}
+
+/* Utility Classes for Animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.4s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s ease-out forwards;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Staggered children animations */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply backdrop-blur-xl bg-white/70 dark:bg-black/30;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-accent-foreground;
+  }
+
+  /* Wellness status pills */
+  .status-green {
+    @apply bg-wellness-green/15 text-wellness-green border-wellness-green/30;
+  }
+
+  .status-yellow {
+    @apply bg-wellness-yellow/15 text-yellow-700 dark:text-wellness-yellow border-wellness-yellow/30;
+  }
+
+  .status-red {
+    @apply bg-wellness-red/15 text-wellness-red border-wellness-red/30;
+  }
+
+  /* Soft shadow elevation */
+  .shadow-soft {
+    box-shadow:
+      0 2px 8px -2px rgba(0, 0, 0, 0.05),
+      0 4px 16px -4px rgba(0, 0, 0, 0.08);
+  }
+
+  .shadow-soft-lg {
+    box-shadow:
+      0 4px 12px -4px rgba(0, 0, 0, 0.06),
+      0 8px 32px -8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Hover lift effect */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 24px -8px rgba(0, 0, 0, 0.08),
+      0 16px 48px -16px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Card glow effect on hover */
+  .card-glow {
+    @apply relative overflow-hidden;
+  }
+
+  .card-glow::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-500;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(var(--primary), 0.06),
+      transparent 40%
+    );
+  }
+
+  .card-glow:hover::before {
+    @apply opacity-100;
+  }
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-wellness {
+  background: linear-gradient(
+    135deg,
+    oklch(0.96 0.02 175 / 0.3) 0%,
+    oklch(0.98 0.01 90) 50%,
+    oklch(0.96 0.02 290 / 0.2) 100%
+  );
+}
+
+.dark .bg-gradient-wellness {
+  background: linear-gradient(
+    135deg,
+    oklch(0.20 0.03 175 / 0.4) 0%,
+    oklch(0.16 0.015 260) 50%,
+    oklch(0.20 0.03 290 / 0.3) 100%
+  );
+}
+
+/* Noise texture overlay */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Survey page special gradient */
+.bg-gradient-survey {
+  background: linear-gradient(
+    160deg,
+    oklch(0.55 0.14 175) 0%,
+    oklch(0.48 0.12 200) 40%,
+    oklch(0.50 0.10 260) 100%
+  );
+}
+
+/* Status indicator glow */
+.glow-green {
+  box-shadow: 0 0 20px oklch(0.70 0.15 145 / 0.4);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 20px oklch(0.82 0.14 85 / 0.4);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px oklch(0.62 0.18 25 / 0.4);
 }

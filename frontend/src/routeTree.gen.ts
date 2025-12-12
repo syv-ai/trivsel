@@ -15,9 +15,18 @@ import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as SurveyTokenRouteImport } from './routes/survey.$token'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutAnalyticsRouteImport } from './routes/_layout/analytics'
+import { Route as LayoutAlertsRouteImport } from './routes/_layout/alerts'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as ConsentTokenDeclineRouteImport } from './routes/consent/$token/decline'
+import { Route as ConsentTokenAcceptRouteImport } from './routes/consent/$token/accept'
+import { Route as LayoutStudentsStudentIdRouteImport } from './routes/_layout/students.$studentId'
+import { Route as LayoutAdminStudentsRouteImport } from './routes/_layout/admin.students'
+import { Route as LayoutAdminQuestionsRouteImport } from './routes/_layout/admin.questions'
+import { Route as LayoutAdminGroupsRouteImport } from './routes/_layout/admin.groups'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -48,6 +57,11 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
+const SurveyTokenRoute = SurveyTokenRouteImport.update({
+  id: '/survey/$token',
+  path: '/survey/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -58,10 +72,50 @@ const LayoutItemsRoute = LayoutItemsRouteImport.update({
   path: '/items',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutAnalyticsRoute = LayoutAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutAlertsRoute = LayoutAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => LayoutRoute,
+} as any)
+const ConsentTokenDeclineRoute = ConsentTokenDeclineRouteImport.update({
+  id: '/consent/$token/decline',
+  path: '/consent/$token/decline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsentTokenAcceptRoute = ConsentTokenAcceptRouteImport.update({
+  id: '/consent/$token/accept',
+  path: '/consent/$token/accept',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LayoutStudentsStudentIdRoute = LayoutStudentsStudentIdRouteImport.update({
+  id: '/students/$studentId',
+  path: '/students/$studentId',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutAdminStudentsRoute = LayoutAdminStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => LayoutAdminRoute,
+} as any)
+const LayoutAdminQuestionsRoute = LayoutAdminQuestionsRouteImport.update({
+  id: '/questions',
+  path: '/questions',
+  getParentRoute: () => LayoutAdminRoute,
+} as any)
+const LayoutAdminGroupsRoute = LayoutAdminGroupsRouteImport.update({
+  id: '/groups',
+  path: '/groups',
+  getParentRoute: () => LayoutAdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -69,20 +123,38 @@ export interface FileRoutesByFullPath {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof LayoutAdminRoute
+  '/admin': typeof LayoutAdminRouteWithChildren
+  '/alerts': typeof LayoutAlertsRoute
+  '/analytics': typeof LayoutAnalyticsRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/survey/$token': typeof SurveyTokenRoute
   '/': typeof LayoutIndexRoute
+  '/admin/groups': typeof LayoutAdminGroupsRoute
+  '/admin/questions': typeof LayoutAdminQuestionsRoute
+  '/admin/students': typeof LayoutAdminStudentsRoute
+  '/students/$studentId': typeof LayoutStudentsStudentIdRoute
+  '/consent/$token/accept': typeof ConsentTokenAcceptRoute
+  '/consent/$token/decline': typeof ConsentTokenDeclineRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof LayoutAdminRoute
+  '/admin': typeof LayoutAdminRouteWithChildren
+  '/alerts': typeof LayoutAlertsRoute
+  '/analytics': typeof LayoutAnalyticsRoute
   '/items': typeof LayoutItemsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/survey/$token': typeof SurveyTokenRoute
   '/': typeof LayoutIndexRoute
+  '/admin/groups': typeof LayoutAdminGroupsRoute
+  '/admin/questions': typeof LayoutAdminQuestionsRoute
+  '/admin/students': typeof LayoutAdminStudentsRoute
+  '/students/$studentId': typeof LayoutStudentsStudentIdRoute
+  '/consent/$token/accept': typeof ConsentTokenAcceptRoute
+  '/consent/$token/decline': typeof ConsentTokenDeclineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -91,10 +163,19 @@ export interface FileRoutesById {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/admin': typeof LayoutAdminRouteWithChildren
+  '/_layout/alerts': typeof LayoutAlertsRoute
+  '/_layout/analytics': typeof LayoutAnalyticsRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
+  '/survey/$token': typeof SurveyTokenRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/_layout/admin/groups': typeof LayoutAdminGroupsRoute
+  '/_layout/admin/questions': typeof LayoutAdminQuestionsRoute
+  '/_layout/admin/students': typeof LayoutAdminStudentsRoute
+  '/_layout/students/$studentId': typeof LayoutStudentsStudentIdRoute
+  '/consent/$token/accept': typeof ConsentTokenAcceptRoute
+  '/consent/$token/decline': typeof ConsentTokenDeclineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,9 +185,18 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/alerts'
+    | '/analytics'
     | '/items'
     | '/settings'
+    | '/survey/$token'
     | '/'
+    | '/admin/groups'
+    | '/admin/questions'
+    | '/admin/students'
+    | '/students/$studentId'
+    | '/consent/$token/accept'
+    | '/consent/$token/decline'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -114,9 +204,18 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/alerts'
+    | '/analytics'
     | '/items'
     | '/settings'
+    | '/survey/$token'
     | '/'
+    | '/admin/groups'
+    | '/admin/questions'
+    | '/admin/students'
+    | '/students/$studentId'
+    | '/consent/$token/accept'
+    | '/consent/$token/decline'
   id:
     | '__root__'
     | '/_layout'
@@ -125,9 +224,18 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
+    | '/_layout/alerts'
+    | '/_layout/analytics'
     | '/_layout/items'
     | '/_layout/settings'
+    | '/survey/$token'
     | '/_layout/'
+    | '/_layout/admin/groups'
+    | '/_layout/admin/questions'
+    | '/_layout/admin/students'
+    | '/_layout/students/$studentId'
+    | '/consent/$token/accept'
+    | '/consent/$token/decline'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,6 +244,9 @@ export interface RootRouteChildren {
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  SurveyTokenRoute: typeof SurveyTokenRoute
+  ConsentTokenAcceptRoute: typeof ConsentTokenAcceptRoute
+  ConsentTokenDeclineRoute: typeof ConsentTokenDeclineRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -182,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/survey/$token': {
+      id: '/survey/$token'
+      path: '/survey/$token'
+      fullPath: '/survey/$token'
+      preLoaderRoute: typeof SurveyTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout/settings': {
       id: '/_layout/settings'
       path: '/settings'
@@ -196,6 +314,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutItemsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/analytics': {
+      id: '/_layout/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof LayoutAnalyticsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/alerts': {
+      id: '/_layout/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof LayoutAlertsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -203,21 +335,85 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/consent/$token/decline': {
+      id: '/consent/$token/decline'
+      path: '/consent/$token/decline'
+      fullPath: '/consent/$token/decline'
+      preLoaderRoute: typeof ConsentTokenDeclineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consent/$token/accept': {
+      id: '/consent/$token/accept'
+      path: '/consent/$token/accept'
+      fullPath: '/consent/$token/accept'
+      preLoaderRoute: typeof ConsentTokenAcceptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_layout/students/$studentId': {
+      id: '/_layout/students/$studentId'
+      path: '/students/$studentId'
+      fullPath: '/students/$studentId'
+      preLoaderRoute: typeof LayoutStudentsStudentIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/admin/students': {
+      id: '/_layout/admin/students'
+      path: '/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof LayoutAdminStudentsRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
+    '/_layout/admin/questions': {
+      id: '/_layout/admin/questions'
+      path: '/questions'
+      fullPath: '/admin/questions'
+      preLoaderRoute: typeof LayoutAdminQuestionsRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
+    '/_layout/admin/groups': {
+      id: '/_layout/admin/groups'
+      path: '/groups'
+      fullPath: '/admin/groups'
+      preLoaderRoute: typeof LayoutAdminGroupsRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
   }
 }
 
+interface LayoutAdminRouteChildren {
+  LayoutAdminGroupsRoute: typeof LayoutAdminGroupsRoute
+  LayoutAdminQuestionsRoute: typeof LayoutAdminQuestionsRoute
+  LayoutAdminStudentsRoute: typeof LayoutAdminStudentsRoute
+}
+
+const LayoutAdminRouteChildren: LayoutAdminRouteChildren = {
+  LayoutAdminGroupsRoute: LayoutAdminGroupsRoute,
+  LayoutAdminQuestionsRoute: LayoutAdminQuestionsRoute,
+  LayoutAdminStudentsRoute: LayoutAdminStudentsRoute,
+}
+
+const LayoutAdminRouteWithChildren = LayoutAdminRoute._addFileChildren(
+  LayoutAdminRouteChildren,
+)
+
 interface LayoutRouteChildren {
-  LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutAdminRoute: typeof LayoutAdminRouteWithChildren
+  LayoutAlertsRoute: typeof LayoutAlertsRoute
+  LayoutAnalyticsRoute: typeof LayoutAnalyticsRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutStudentsStudentIdRoute: typeof LayoutStudentsStudentIdRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutAdminRoute: LayoutAdminRoute,
+  LayoutAdminRoute: LayoutAdminRouteWithChildren,
+  LayoutAlertsRoute: LayoutAlertsRoute,
+  LayoutAnalyticsRoute: LayoutAnalyticsRoute,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
+  LayoutStudentsStudentIdRoute: LayoutStudentsStudentIdRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -229,6 +425,9 @@ const rootRouteChildren: RootRouteChildren = {
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  SurveyTokenRoute: SurveyTokenRoute,
+  ConsentTokenAcceptRoute: ConsentTokenAcceptRoute,
+  ConsentTokenDeclineRoute: ConsentTokenDeclineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -25,7 +25,7 @@ import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
 const formSchema = z.object({
-  email: z.email(),
+  email: z.email({ message: "Indtast en gyldig email" }),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/recover-password")({
   head: () => ({
     meta: [
       {
-        title: "Recover Password - FastAPI Cloud",
+        title: "Gendan adgangskode - TrivselsTracker",
       },
     ],
   }),
@@ -66,7 +66,7 @@ function RecoverPassword() {
   const mutation = useMutation({
     mutationFn: recoverPassword,
     onSuccess: () => {
-      showSuccessToast("Password recovery email sent successfully")
+      showSuccessToast("Email til nulstilling af adgangskode er sendt")
       form.reset()
     },
     onError: handleError.bind(showErrorToast),
@@ -85,7 +85,7 @@ function RecoverPassword() {
           className="flex flex-col gap-6"
         >
           <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold">Password Recovery</h1>
+            <h1 className="text-2xl font-bold">Gendan adgangskode</h1>
           </div>
 
           <div className="grid gap-4">
@@ -98,7 +98,7 @@ function RecoverPassword() {
                   <FormControl>
                     <Input
                       data-testid="email-input"
-                      placeholder="user@example.com"
+                      placeholder="bruger@example.com"
                       type="email"
                       {...field}
                     />
@@ -113,14 +113,14 @@ function RecoverPassword() {
               className="w-full"
               loading={mutation.isPending}
             >
-              Continue
+              Fortsæt
             </LoadingButton>
           </div>
 
           <div className="text-center text-sm">
-            Remember your password?{" "}
+            Husker du din adgangskode?{" "}
             <RouterLink to="/login" className="underline underline-offset-4">
-              Log in
+              Log ind
             </RouterLink>
           </div>
         </form>
