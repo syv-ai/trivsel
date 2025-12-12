@@ -36,7 +36,7 @@ class EmailService:
         self.api_token = settings.LETTERMINT_API_TOKEN
         self.from_email = settings.LETTERMINT_FROM_EMAIL
         self.from_name = settings.LETTERMINT_FROM_NAME
-        self.survey_base_url = settings.SURVEY_LINK_BASE_URL
+        self.survey_base_url = f"{settings.FRONTEND_HOST}/survey"
 
     @property
     def from_address(self) -> str:
