@@ -679,9 +679,10 @@ function SurveyPage() {
           className="flex justify-center gap-2 mt-6 flex-wrap px-4"
         >
           {questions.map((q, idx) => {
-            const qCategory = categoryConfig[q.category] || categoryConfig.trivsel
             const isAnswered = responses[q.id] !== undefined
             const isCurrent = idx === currentQuestionIndex
+            const answerValue = responses[q.id]
+            const answerColor = answerValue ? answerOptions.find(a => a.value === answerValue)?.color : undefined
 
             return (
               <motion.button
@@ -696,7 +697,7 @@ function SurveyPage() {
                   isCurrent ? "w-6 h-2" : "w-2 h-2"
                 )}
                 style={{
-                  backgroundColor: isAnswered || isCurrent ? qCategory.color : "#e0dcd7",
+                  backgroundColor: isAnswered ? answerColor : isCurrent ? category.color : "#e0dcd7",
                   opacity: isAnswered || isCurrent ? 1 : 0.5,
                 }}
               />
