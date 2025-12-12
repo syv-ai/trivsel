@@ -28,7 +28,7 @@ services:
       - ADMINER_DESIGN=pepa-linha-dark
 
   prestart:
-    image: '${DOCKER_IMAGE_BACKEND:-backend}:${TAG:-latest}'
+    image: 'backend:${TAG:-latest}'
     build:
       context: ./backend
     depends_on:
@@ -56,7 +56,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
 
   backend:
-    image: '${DOCKER_IMAGE_BACKEND:-backend}:${TAG:-latest}'
+    image: 'backend:${TAG:-latest}'
     restart: always
     depends_on:
       db:
@@ -93,7 +93,7 @@ services:
       - "8000:8000"
 
   frontend:
-    image: '${DOCKER_IMAGE_FRONTEND:-frontend}:${TAG:-latest}'
+    image: 'frontend:${TAG:-latest}'
     restart: always
     build:
       context: ./frontend
