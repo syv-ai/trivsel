@@ -1,4 +1,4 @@
-from sqlmodel import Session, create_engine, select
+from sqlmodel import Session, create_engine, select, SQLModel
 
 from app import crud
 from app.core.config import settings
@@ -12,6 +12,12 @@ from app.models import (
 )
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+
+
+def reset_db() -> None:
+    """Drop all tables and recreate them."""
+    SQLModel.metadata.drop_all(engine)
+    SQLModel.metadata.create_all(engine)
 
 
 # make sure all SQLModel models are imported (app.models) before initializing DB

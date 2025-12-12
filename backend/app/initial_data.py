@@ -2,13 +2,15 @@ import logging
 
 from sqlmodel import Session
 
-from app.core.db import engine, init_db
+from app.core.db import engine, init_db, reset_db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 def init() -> None:
+    logger.info("Dropping and recreating all tables")
+    reset_db()
     with Session(engine) as session:
         init_db(session)
 
