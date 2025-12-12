@@ -11,7 +11,11 @@ from app.models import (
     QuestionPhase,
 )
 
-engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+engine = create_engine(
+    str(settings.SQLALCHEMY_DATABASE_URI),
+    pool_pre_ping=True,  # Test connections before using them
+    pool_recycle=300,    # Recycle connections after 5 minutes
+)
 
 
 def reset_db() -> None:
