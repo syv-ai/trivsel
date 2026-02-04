@@ -36,9 +36,11 @@ import {
   MessageSquare,
   Activity,
   Target,
+  Send,
 } from "lucide-react"
 import { toast } from "sonner"
 import { OpenAPI } from "@/client"
+import { SendSurveyDialog } from "@/components/SendSurveyDialog"
 
 export const Route = createFileRoute("/_layout/students/$studentId")({
   component: StudentDetail,
@@ -145,6 +147,7 @@ function StudentDetail() {
   const [interventionDialogOpen, setInterventionDialogOpen] = useState(false)
   const [newInterventionStatus, setNewInterventionStatus] = useState("")
   const [newInterventionComment, setNewInterventionComment] = useState("")
+  const [sendSurveyDialogOpen, setSendSurveyDialogOpen] = useState(false)
 
   // Fetch student
   const { data: student, isLoading: studentLoading } = useQuery<Student>({
@@ -317,6 +320,15 @@ function StudentDetail() {
                 </Badge>
               </div>
             </div>
+            {student.consent_status && student.status === "active" && (
+              <Button
+                onClick={() => setSendSurveyDialogOpen(true)}
+                className="rounded-xl"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Send tjek
+              </Button>
+            )}
           </div>
 
           {latestTotalScore && (
@@ -691,6 +703,14 @@ function StudentDetail() {
           </motion.div>
         </div>
       </div>
+
+      {/* Send Survey Dialog */}
+      <SendSurveyDialog
+        studentId={studentId}
+        studentName={student.name}
+        open={sendSurveyDialogOpen}
+        onOpenChange={setSendSurveyDialogOpen}
+      />
     </div>
   )
 }
