@@ -32,9 +32,11 @@ import {
   Search,
   FolderOpen,
   Sparkles,
+  Send,
 } from "lucide-react"
 import { toast } from "sonner"
 import { OpenAPI } from "@/client"
+import { SendSurveyDialog } from "@/components/SendSurveyDialog"
 
 export const Route = createFileRoute("/_layout/admin/groups")({
   component: AdminGroups,
@@ -68,6 +70,7 @@ interface GroupMember {
   student_id: string
   student_name: string
   student_internal_id: string
+  consent_status?: boolean
 }
 
 function StatCard({
@@ -123,6 +126,8 @@ function AdminGroups() {
   const [newGroup, setNewGroup] = useState({ name: "", description: "" })
   const [selectedStudentId, setSelectedStudentId] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
+  const [sendSurveyDialogOpen, setSendSurveyDialogOpen] = useState(false)
+  const [selectedMemberForSurvey, setSelectedMemberForSurvey] = useState<GroupMember | null>(null)
 
   // Fetch groups
   const { data: groupsData, isLoading } = useQuery<{
@@ -725,21 +730,35 @@ function AdminGroups() {
                         </p>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        selectedGroup &&
-                        removeMemberMutation.mutate({
-                          groupId: selectedGroup.id,
-                          studentId: member.student_id,
-                        })
-                      }
-                      disabled={removeMemberMutation.isPending}
-                      className="rounded-xl hover:bg-red-100 hover:text-red-600"
-                    >
-                      <UserMinus className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedMemberForSurvey(member)
+                          setSendSurveyDialogOpen(true)
+                        }}
+                        className="rounded-xl hover:bg-primary/10 text-primary"
+                        title="Send trivselstjek"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          selectedGroup &&
+                          removeMemberMutation.mutate({
+                            groupId: selectedGroup.id,
+                            studentId: member.student_id,
+                          })
+                        }
+                        disabled={removeMemberMutation.isPending}
+                        className="rounded-xl hover:bg-red-100 hover:text-red-600"
+                      >
+                        <UserMinus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
@@ -757,6 +776,16 @@ function AdminGroups() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Send Survey Dialog */}
+      {selectedMemberForSurvey && (
+        <SendSurveyDialog
+          studentId={selectedMemberForSurvey.student_id}
+          studentName={selectedMemberForSurvey.student_name}
+          open={sendSurveyDialogOpen}
+          onOpenChange={setSendSurveyDialogOpen}
+        />
+      )}
     </div>
   )
 }
