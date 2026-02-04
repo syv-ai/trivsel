@@ -433,6 +433,7 @@ def create_survey_session(
     week_number: int,
     year: int,
     token_expiry_days: int = 4,
+    custom_questions: list[str] | None = None,
 ) -> SurveySession:
     """Create a new survey session for a student"""
     db_session = SurveySession(
@@ -440,6 +441,7 @@ def create_survey_session(
         week_number=week_number,
         year=year,
         token_expires_at=datetime.utcnow() + timedelta(days=token_expiry_days),
+        custom_questions=custom_questions,
     )
     session.add(db_session)
     session.commit()
@@ -563,6 +565,49 @@ def get_session_responses(
 ) -> list[SurveyResponse]:
     statement = select(SurveyResponse).where(SurveyResponse.session_id == session_id)
     return list(session.exec(statement).all())
+
+
+def create_custom_response(
+    *,
+    session: Session,
+    session_id: uuid.UUID,
+    custom_question_index: int,
+    answer: int,
+) -> SurveyResponse:
+    """Create a response for a custom question"""
+    db_response = SurveyResponse(
+        session_id=session_id,
+        question_id=None,
+        custom_question_index=custom_question_index,
+        answer=answer,
+    )
+    session.add(db_response)
+    session.commit()
+    session.refresh(db_response)
+    return db_response
+
+
+def create_custom_responses_bulk(
+    *,
+    session: Session,
+    session_id: uuid.UUID,
+    custom_responses: list[tuple[int, int]],  # (index, answer)
+) -> list[SurveyResponse]:
+    """Create multiple custom responses at once"""
+    db_responses = []
+    for custom_question_index, answer in custom_responses:
+        db_response = SurveyResponse(
+            session_id=session_id,
+            question_id=None,
+            custom_question_index=custom_question_index,
+            answer=answer,
+        )
+        session.add(db_response)
+        db_responses.append(db_response)
+    session.commit()
+    for r in db_responses:
+        session.refresh(r)
+    return db_responses
 
 
 # =============================================================================

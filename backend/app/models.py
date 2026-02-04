@@ -408,6 +408,7 @@ class SurveySession(SurveySessionBase, table=True):
     sent_at: datetime = Field(default_factory=datetime.utcnow)
     completed_at: datetime | None = Field(default=None)
     reminder_count: int = Field(default=0)
+    custom_questions: list[str] | None = Field(default=None, sa_column=Column(JSON))
     # Relationships
     student: Student = Relationship(back_populates="survey_sessions")
     responses: list["SurveyResponse"] = Relationship(
@@ -444,27 +445,57 @@ class SurveyResponseCreate(SurveyResponseBase):
     question_id: uuid.UUID
 
 
+class CustomResponseCreate(SQLModel):
+    """Create a response for a custom question"""
+
+    custom_question_index: int = Field(ge=0, le=1)
+    answer: int = Field(ge=1, le=5)
+
+
 class SurveyResponseBulkCreate(SQLModel):
     """Bulk create survey responses"""
 
     responses: list[SurveyResponseCreate]
+    custom_responses: list[CustomResponseCreate] | None = None
 
 
 class SurveyResponse(SurveyResponseBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     session_id: uuid.UUID = Field(foreign_key="surveysession.id", ondelete="CASCADE")
-    question_id: uuid.UUID = Field(foreign_key="surveyquestion.id", ondelete="CASCADE")
+    question_id: uuid.UUID | None = Field(
+        default=None, foreign_key="surveyquestion.id", ondelete="CASCADE"
+    )
+    custom_question_index: int | None = Field(default=None, ge=0, le=1)
     answered_at: datetime = Field(default_factory=datetime.utcnow)
     # Relationships
     session: SurveySession = Relationship(back_populates="responses")
-    question: SurveyQuestion = Relationship(back_populates="responses")
+    question: SurveyQuestion | None = Relationship(back_populates="responses")
 
 
 class SurveyResponsePublic(SurveyResponseBase):
     id: uuid.UUID
     session_id: uuid.UUID
-    question_id: uuid.UUID
+    question_id: uuid.UUID | None
+    custom_question_index: int | None
     answered_at: datetime
+
+
+# =============================================================================
+# CUSTOM QUESTION MODELS
+# =============================================================================
+
+
+class SendSurveyRequest(SQLModel):
+    """Request body for sending a survey with optional custom questions"""
+
+    custom_questions: list[str] | None = Field(default=None)
+
+
+class CustomQuestionInfo(SQLModel):
+    """Information about a custom question"""
+
+    index: int
+    question_text: str
 
 
 # =============================================================================
@@ -660,6 +691,7 @@ class SurveyInfo(SQLModel):
     week_number: int
     year: int
     questions: list[SurveyQuestionPublic]
+    custom_questions: list[CustomQuestionInfo] | None = None
     status: SessionStatus
 
 

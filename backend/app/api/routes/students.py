@@ -26,6 +26,7 @@ from app.models import (
     ScoreHistory,
     ScorePublic,
     ScoresPublic,
+    SendSurveyRequest,
     StaffRole,
     Student,
     StudentCreate,
@@ -393,6 +394,7 @@ async def send_survey(
     current_user: CurrentUser,
     student_id: uuid.UUID,
     background_tasks: BackgroundTasks,
+    request: SendSurveyRequest | None = None,
 ) -> Message:
     """
     Send a survey invitation email to a student.
@@ -400,6 +402,7 @@ async def send_survey(
     Creates a new survey session and sends an email with the survey link.
     Only admins and superusers can send surveys.
     Student must have given consent to receive surveys.
+    Optionally include up to 2 custom questions.
     """
     if not current_user.is_superuser and current_user.role != StaffRole.ADMIN:
         raise HTTPException(
@@ -426,6 +429,19 @@ async def send_survey(
             detail="Cannot send survey to inactive student",
         )
 
+    # Validate custom questions
+    custom_questions = None
+    if request and request.custom_questions:
+        if len(request.custom_questions) > 2:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Maximum 2 custom questions allowed",
+            )
+        # Filter out empty questions
+        custom_questions = [q.strip() for q in request.custom_questions if q.strip()]
+        if not custom_questions:
+            custom_questions = None
+
     # Get current week number and year
     now = datetime.utcnow()
     week_number = now.isocalendar()[1]
@@ -437,6 +453,7 @@ async def send_survey(
         student_id=student.id,
         week_number=week_number,
         year=year,
+        custom_questions=custom_questions,
     )
 
     # Send email in background

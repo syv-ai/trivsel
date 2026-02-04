@@ -43,6 +43,7 @@ import {
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { OpenAPI } from "@/client"
+import { SendSurveyDialog } from "@/components/SendSurveyDialog"
 
 export const Route = createFileRoute("/_layout/admin/students")({
   component: AdminStudents,
@@ -86,6 +87,8 @@ function AdminStudents() {
   const [newStudentName, setNewStudentName] = useState("")
   const [newStudentEmail, setNewStudentEmail] = useState("")
   const [newStudentPhase, setNewStudentPhase] = useState("indslusning")
+  const [sendSurveyDialogOpen, setSendSurveyDialogOpen] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
 
   // Fetch students
   const { data: studentsData, isLoading } = useQuery<{
@@ -168,40 +171,11 @@ function AdminStudents() {
     },
   })
 
-  // Send survey mutation
-  const sendSurveyMutation = useMutation({
-    mutationFn: async (studentId: string) => {
-      const response = await fetch(
-        `${OpenAPI.BASE}/api/v1/students/${studentId}/send-survey`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      )
-      if (!response.ok) {
-        const text = await response.text()
-        let errorMessage = "Kunne ikke sende trivselstjek"
-        if (text) {
-          try {
-            const error = JSON.parse(text)
-            errorMessage = error.detail || errorMessage
-          } catch {
-            errorMessage = text
-          }
-        }
-        throw new Error(errorMessage)
-      }
-      return response.json()
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || "Trivselstjek sendt")
-    },
-    onError: (error: Error) => {
-      toast.error(error.message)
-    },
-  })
+  // Handle opening the send survey dialog
+  const handleOpenSendSurveyDialog = (student: Student) => {
+    setSelectedStudent(student)
+    setSendSurveyDialogOpen(true)
+  }
 
   // Filter students by search query
   const filteredStudents = studentsData?.data.filter(
@@ -487,10 +461,7 @@ function AdminStudents() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() =>
-                                  sendSurveyMutation.mutate(student.id)
-                                }
-                                disabled={sendSurveyMutation.isPending}
+                                onClick={() => handleOpenSendSurveyDialog(student)}
                                 className="rounded-lg text-primary hover:text-primary hover:bg-primary/10"
                               >
                                 <Send className="h-4 w-4 mr-1" />
@@ -551,6 +522,16 @@ function AdminStudents() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Send Survey Dialog */}
+      {selectedStudent && (
+        <SendSurveyDialog
+          studentId={selectedStudent.id}
+          studentName={selectedStudent.name}
+          open={sendSurveyDialogOpen}
+          onOpenChange={setSendSurveyDialogOpen}
+        />
+      )}
     </div>
   )
 }

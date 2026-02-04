@@ -13,6 +13,7 @@ from sqlmodel import Session
 from app import crud
 from app.api.deps import SessionDep
 from app.models import (
+    CustomQuestionInfo,
     Message,
     SessionStatus,
     SurveyInfo,
@@ -89,11 +90,20 @@ def get_survey(token: str, session: SessionDep) -> SurveyInfo:
             status=SessionStatus.IN_PROGRESS,
         )
 
+    # Build custom questions info
+    custom_questions_info = None
+    if survey_session.custom_questions:
+        custom_questions_info = [
+            CustomQuestionInfo(index=idx, question_text=q)
+            for idx, q in enumerate(survey_session.custom_questions)
+        ]
+
     return SurveyInfo(
         student_name=student.name,
         week_number=survey_session.week_number,
         year=survey_session.year,
         questions=[SurveyQuestionPublic.model_validate(q) for q in questions],
+        custom_questions=custom_questions_info,
         status=survey_session.status,
     )
 
@@ -185,6 +195,30 @@ async def submit_responses(
             detail="Invalid question IDs in responses",
         )
 
+    # Validate custom responses if custom questions exist
+    expected_custom_count = len(survey_session.custom_questions) if survey_session.custom_questions else 0
+    submitted_custom_count = len(responses.custom_responses) if responses.custom_responses else 0
+
+    if expected_custom_count > 0:
+        if submitted_custom_count != expected_custom_count:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Expected {expected_custom_count} custom responses, got {submitted_custom_count}",
+            )
+        # Validate indices
+        submitted_indices = {r.custom_question_index for r in responses.custom_responses}
+        expected_indices = set(range(expected_custom_count))
+        if submitted_indices != expected_indices:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid custom question indices",
+            )
+    elif submitted_custom_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No custom questions expected for this survey",
+        )
+
     # Create responses
     db_responses = crud.create_responses_bulk(
         session=session,
@@ -192,7 +226,17 @@ async def submit_responses(
         responses=responses.responses,
     )
 
-    # Calculate and save scores
+    # Create custom responses if any
+    if responses.custom_responses:
+        crud.create_custom_responses_bulk(
+            session=session,
+            session_id=survey_session.id,
+            custom_responses=[
+                (r.custom_question_index, r.answer) for r in responses.custom_responses
+            ],
+        )
+
+    # Calculate and save scores (only standard questions affect score)
     scores = scoring.save_scores_for_session(
         db_session=session,
         survey_session=survey_session,

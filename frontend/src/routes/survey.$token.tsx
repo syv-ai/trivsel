@@ -26,16 +26,27 @@ interface SurveyQuestion {
   created_at: string
 }
 
+interface CustomQuestion {
+  index: number
+  question_text: string
+}
+
 interface SurveyInfo {
   student_name: string
   week_number: number
   year: number
   questions: SurveyQuestion[]
+  custom_questions: CustomQuestion[] | null
   status: string
 }
 
 interface SurveyResponse {
   question_id: string
+  answer: number
+}
+
+interface CustomResponse {
+  custom_question_index: number
   answer: number
 }
 
@@ -59,6 +70,7 @@ function SurveyPage() {
   const { token } = Route.useParams()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [responses, setResponses] = useState<Record<string, number>>({})
+  const [customResponses, setCustomResponses] = useState<Record<number, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [result, setResult] = useState<{
     message: string
@@ -85,11 +97,20 @@ function SurveyPage() {
   })
 
   const submitMutation = useMutation({
-    mutationFn: async (responsesArray: SurveyResponse[]) => {
+    mutationFn: async ({
+      responsesArray,
+      customResponsesArray,
+    }: {
+      responsesArray: SurveyResponse[]
+      customResponsesArray: CustomResponse[] | null
+    }) => {
       const response = await fetch(`${OpenAPI.BASE}/api/v1/survey/${token}/responses`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ responses: responsesArray }),
+        body: JSON.stringify({
+          responses: responsesArray,
+          custom_responses: customResponsesArray,
+        }),
       })
       if (!response.ok) {
         const errorData = await response.json()
@@ -355,19 +376,40 @@ function SurveyPage() {
     return null
   }
 
-  const questions = surveyInfo.questions
-  const currentQuestion = questions[currentQuestionIndex]
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100
-  const allAnswered = questions.every((q) => responses[q.id] !== undefined)
-  const category = categoryConfig[currentQuestion.category] || categoryConfig.trivsel
+  const standardQuestions = surveyInfo.questions
+  const customQuestions = surveyInfo.custom_questions || []
+  const totalQuestionCount = standardQuestions.length + customQuestions.length
+  const isCustomQuestion = currentQuestionIndex >= standardQuestions.length
+  const customQuestionIndex = currentQuestionIndex - standardQuestions.length
+
+  // Get current question info
+  const currentStandardQuestion = !isCustomQuestion ? standardQuestions[currentQuestionIndex] : null
+  const currentCustomQuestion = isCustomQuestion ? customQuestions[customQuestionIndex] : null
+
+  const progress = ((currentQuestionIndex + 1) / totalQuestionCount) * 100
+  const allStandardAnswered = standardQuestions.every((q) => responses[q.id] !== undefined)
+  const allCustomAnswered = customQuestions.every((_, idx) => customResponses[idx] !== undefined)
+  const allAnswered = allStandardAnswered && allCustomAnswered
+
+  // Category for styling - use a special one for custom questions
+  const category = isCustomQuestion
+    ? { label: "Ekstra spørgsmål", color: "#8b5cf6", bg: "rgba(139, 92, 246, 0.12)" }
+    : categoryConfig[currentStandardQuestion?.category || "trivsel"] || categoryConfig.trivsel
 
   const handleAnswer = (value: number) => {
-    setResponses((prev) => ({
-      ...prev,
-      [currentQuestion.id]: value,
-    }))
+    if (isCustomQuestion) {
+      setCustomResponses((prev) => ({
+        ...prev,
+        [customQuestionIndex]: value,
+      }))
+    } else {
+      setResponses((prev) => ({
+        ...prev,
+        [currentStandardQuestion!.id]: value,
+      }))
+    }
 
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < totalQuestionCount - 1) {
       setTimeout(() => {
         setDirection(1)
         setCurrentQuestionIndex(currentQuestionIndex + 1)
@@ -379,7 +421,14 @@ function SurveyPage() {
     const responsesArray: SurveyResponse[] = Object.entries(responses).map(
       ([question_id, answer]) => ({ question_id, answer })
     )
-    submitMutation.mutate(responsesArray)
+    const customResponsesArray: CustomResponse[] | null =
+      customQuestions.length > 0
+        ? Object.entries(customResponses).map(([index, answer]) => ({
+            custom_question_index: parseInt(index),
+            answer,
+          }))
+        : null
+    submitMutation.mutate({ responsesArray, customResponsesArray })
   }
 
   const goToPrevious = () => {
@@ -390,7 +439,10 @@ function SurveyPage() {
   }
 
   const goToNext = () => {
-    if (currentQuestionIndex < questions.length - 1 && responses[currentQuestion.id]) {
+    const hasCurrentAnswer = isCustomQuestion
+      ? customResponses[customQuestionIndex] !== undefined
+      : responses[currentStandardQuestion!.id] !== undefined
+    if (currentQuestionIndex < totalQuestionCount - 1 && hasCurrentAnswer) {
       setDirection(1)
       setCurrentQuestionIndex(currentQuestionIndex + 1)
     }
@@ -492,7 +544,7 @@ function SurveyPage() {
         >
           <div className="flex justify-between text-sm mb-2" style={{ fontFamily: "'DM Sans', sans-serif" }}>
             <span className="text-[#7a7a7a]">
-              {currentQuestionIndex + 1} af {questions.length}
+              {currentQuestionIndex + 1} af {totalQuestionCount}
             </span>
             <span className="text-[#a0a0a0]">{Math.round(progress)}%</span>
           </div>
@@ -529,7 +581,9 @@ function SurveyPage() {
                     className="text-xl text-[#2c2c2c] text-center leading-relaxed"
                     style={{ fontFamily: "'Fraunces', serif", fontWeight: 400 }}
                   >
-                    {currentQuestion.question_text_da}
+                    {isCustomQuestion
+                      ? currentCustomQuestion?.question_text
+                      : currentStandardQuestion?.question_text_da}
                   </h2>
                 </div>
 
@@ -542,7 +596,9 @@ function SurveyPage() {
 
                   <div className="flex justify-between gap-3">
                     {answerOptions.map(({ value, color }) => {
-                      const isSelected = responses[currentQuestion.id] === value
+                      const isSelected = isCustomQuestion
+                        ? customResponses[customQuestionIndex] === value
+                        : responses[currentStandardQuestion!.id] === value
                       return (
                         <motion.button
                           key={value}
@@ -614,20 +670,34 @@ function SurveyPage() {
             Forrige
           </button>
 
-          {currentQuestionIndex < questions.length - 1 ? (
+          {currentQuestionIndex < totalQuestionCount - 1 ? (
             <button
               onClick={goToNext}
-              disabled={!responses[currentQuestion.id]}
+              disabled={
+                isCustomQuestion
+                  ? customResponses[customQuestionIndex] === undefined
+                  : responses[currentStandardQuestion!.id] === undefined
+              }
               className={cn(
                 "flex-1 h-14 rounded-2xl font-medium transition-all duration-200",
                 "flex items-center justify-center gap-2",
-                !responses[currentQuestion.id]
+                (isCustomQuestion
+                  ? customResponses[customQuestionIndex] === undefined
+                  : responses[currentStandardQuestion!.id] === undefined)
                   ? "bg-[#f5f3f0] text-[#c0c0c0] cursor-not-allowed"
                   : "text-white"
               )}
               style={{
-                backgroundColor: responses[currentQuestion.id] ? category.color : undefined,
-                boxShadow: responses[currentQuestion.id] ? `0 4px 14px ${category.color}40` : undefined,
+                backgroundColor: (isCustomQuestion
+                  ? customResponses[customQuestionIndex] !== undefined
+                  : responses[currentStandardQuestion!.id] !== undefined)
+                  ? category.color
+                  : undefined,
+                boxShadow: (isCustomQuestion
+                  ? customResponses[customQuestionIndex] !== undefined
+                  : responses[currentStandardQuestion!.id] !== undefined)
+                  ? `0 4px 14px ${category.color}40`
+                  : undefined,
               }}
             >
               Næste
@@ -678,7 +748,8 @@ function SurveyPage() {
           transition={{ delay: 0.4 }}
           className="flex justify-center gap-2 mt-6 flex-wrap px-4"
         >
-          {questions.map((q, idx) => {
+          {/* Standard question dots */}
+          {standardQuestions.map((q, idx) => {
             const isAnswered = responses[q.id] !== undefined
             const isCurrent = idx === currentQuestionIndex
             const answerValue = responses[q.id]
@@ -698,6 +769,34 @@ function SurveyPage() {
                 )}
                 style={{
                   backgroundColor: isAnswered ? answerColor : isCurrent ? category.color : "#e0dcd7",
+                  opacity: isAnswered || isCurrent ? 1 : 0.5,
+                }}
+              />
+            )
+          })}
+          {/* Custom question dots */}
+          {customQuestions.map((_, idx) => {
+            const globalIdx = standardQuestions.length + idx
+            const isAnswered = customResponses[idx] !== undefined
+            const isCurrent = globalIdx === currentQuestionIndex
+            const answerValue = customResponses[idx]
+            const answerColor = answerValue ? answerOptions.find(a => a.value === answerValue)?.color : undefined
+            const customCategory = { color: "#8b5cf6" }
+
+            return (
+              <motion.button
+                key={`custom-${idx}`}
+                onClick={() => {
+                  setDirection(globalIdx > currentQuestionIndex ? 1 : -1)
+                  setCurrentQuestionIndex(globalIdx)
+                }}
+                whileHover={{ scale: 1.3 }}
+                className={cn(
+                  "rounded-full transition-all duration-300",
+                  isCurrent ? "w-6 h-2" : "w-2 h-2"
+                )}
+                style={{
+                  backgroundColor: isAnswered ? answerColor : isCurrent ? customCategory.color : "#e0dcd7",
                   opacity: isAnswered || isCurrent ? 1 : 0.5,
                 }}
               />
